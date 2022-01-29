@@ -1,0 +1,71 @@
+<div class="row lead fs-6">
+    
+    <div id="divDetalleHorario" class="col-4">
+        <div class="card">
+            <div class="card-header">
+                <span class="h5 text-dark">Detalle de Sucursal</span>
+                <button class="btn btn-outline-danger float-end" onclick="setFormularioDetalleHorarioVisible(false);">
+                    <i class="fas fa-times-circle"></i>
+                </button>
+            </div>
+            <div class="card-body">
+                <div class="form">
+                    <div>
+                        <label for="txtCodigo" class="form-label">C&oacute;digo de Horario</label>
+                        <input id="txtCodigo" type="number" class="form-control" />
+                    </div>
+                    <div>
+                        <label for="txtHoraInicio" class="form-label" >Hora de inicio</label>
+                        <input id="txtHoraInicio" type="text" class="form-control"/>
+                    </div>
+                    <div class="my-3">
+                        <label for="txtHoraFin" class="form-label" >Hora de t&eacute;rmino</label>
+                        <input id="txtHoraFin" type="text" class="form-control"/>
+                    </div>
+                </div>
+                <div class="my-3 text-center">
+                    <button class="btn btn-outline-dark" onclick="limpiarFormularioHorario();">
+                        <i class="fas fa-plus-square"></i>&nbsp;&nbsp;Nuevo</button>
+                    <button class="btn btn-outline-success mx-2" onclick="guardarHorario();">
+                        <i class="fas fa-save"></i>&nbsp;&nbsp;Guardar</button>
+                    <button class="btn btn-outline-danger" onclick="eliminarHorario();">
+                        <i class="fas fa-trash"></i>&nbsp;Eliminar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div id="divTablaHorario">
+        <div class="card">
+            <div class="card-header p-3">
+                <span class="h4 text-dark">Cat&aacute;logo de Horarios</span>
+                <button class="btn btn-outline-danger float-end btn-sm" onclick="cerrarModulo();">
+                    <i class="fas fa-times"></i>
+                </button>
+                <button class="btn btn-outline-success float-end mx-2 btn-sm"
+                        onclick="setFormularioDetalleHorarioVisible(true); limpiarFormularioHorario();">
+                    <i class="fas fa-plus"></i>&nbsp;&nbsp;Nuevo
+                </button>
+            </div>
+            <div class="card-body p-0">
+                <table class="table table-hover bg-light m-0 p-0">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Hora Inicio</th>
+                            <th>Hora T&eacute;rmino</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tbodyHorarios">
+
+                    </tbody> 
+                </table>
+            </div>
+        </div>
+    </div>
+    
+</div>
+<script type="text/javascript" src="gestion/horario/horario.js"></script>
+<script type="text/javascript">
+    inicializarModuloHorario();
+</script>

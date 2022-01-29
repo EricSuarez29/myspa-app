@@ -1,0 +1,82 @@
+<div class="row lead fs-6">
+    
+    <div id="divDetalleProducto" class="col-4">
+        <div class="card">
+            <div class="card-header">
+                <span class="h5 text-dark">Detalle de Producto</span>
+                <button class="btn btn-outline-danger float-end" onclick="setFormularioDetalleVisible(false);">
+                    <i class="fas fa-times-circle"></i>
+                </button>
+            </div>
+            <div class="card-body">
+                <div>
+                    <label for="txtCodigo" class="form-label">C&oacute;digo del Producto</label>
+                    <input id="txtCodigo" type="number" class="form-control" />
+                </div>
+                <div class="my-3">
+                    <label for="txtNombre" class="form-label">Nombre</label>
+                    <input id="txtNombre" type="text" class="form-control" />
+                </div>
+                <div class="my-3">
+                    <label for="txtMarca" class="form-label">Marca</label>
+                    <input id="txtMarca" type="text" class="form-control" />
+                </div>
+                <div class="my-3">
+                    <label for="txtPrecio" class="form-label">Precio de Uso</label>
+                    <input id="txtPrecio" type="number" class="form-control" />
+                </div>
+                <div class="my-3">
+                    <label for="txtEstatus" class="form-label">Estatus</label>
+                    <div id="divEstatus">
+                        Activo - Inactivo
+                    </div>
+                </div>
+                <div class="my-3 text-center">
+                    <button class="btn btn-outline-dark" onclick="limpiarFormulario();">
+                        <i class="fas fa-plus-square"></i>&nbsp;&nbsp;Nuevo</button>
+                    <button class="btn btn-outline-success mx-2" onclick="guardarProducto();">
+                        <i class="fas fa-save"></i>&nbsp;&nbsp;Guardar</button>
+                    <button class="btn btn-outline-danger" onclick="eliminarProducto();">
+                        <i class="fas fa-trash"></i>&nbsp;Eliminar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div id="divTablaProductos">
+        <div class="card">
+            <div class="card-header p-3">
+                <span class="h4 text-dark">Cat&aacute;logo de Productos</span>
+                <button class="btn btn-outline-danger float-end btn-sm" onclick="cerrarModulo();">
+                    <i class="fas fa-times"></i>
+                </button>
+                <button class="btn btn-outline-success float-end mx-2 btn-sm"
+                        onclick="setFormularioDetalleVisible(true);">
+                    <i class="fas fa-plus"></i>&nbsp;&nbsp;Nuevo
+                </button>
+            </div>
+            <div class="card-body p-0">
+                <table class="table table-hover bg-light m-0 p-0">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Nombre</th>
+                            <th>Marca</th>
+                            <th>Precio Uso</th>
+                            <th>Estatus</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tbodyProductos">
+
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    
+</div>
+
+<script type="text/javascript" src="gestion/producto/producto.js"></script>
+<script type="text/javascript">
+                        inicializarModuloProducto();
+</script>
