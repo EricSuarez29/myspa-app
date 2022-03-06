@@ -37,7 +37,7 @@ public class HorarioResource {
         
         try {
             Horario h = new Gson().fromJson(horario, Horario.class);
-            if(h.getIdHorario() == 0){
+            if(h.getId() == 0){
                 c.insertHorario(h);
             }else {
                 c.actualizarHorario(h);

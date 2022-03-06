@@ -174,7 +174,7 @@ public class SalaController {
         return salas;
     }
 
-     public List<Sala> getAllBySucursal(String filtro,int idSucursal) throws Exception {
+     public List<Sala> getAllBySucursal(int idSucursal) throws Exception {
         //Definimos la consulta SQL:
         String sql = "SELECT * FROM sala WHERE estatus=1 AND idSucursal=?";
 
@@ -221,7 +221,7 @@ public class SalaController {
      * @return
      * @throws Exception
      */
-    private Sala fill(ResultSet rs) throws Exception {
+    public static Sala fill(ResultSet rs) throws Exception {
         //Creamos una nueva instancia de Sucursal:
         Sala s = new Sala();
 
@@ -236,4 +236,26 @@ public class SalaController {
         return s;
     }
 
+    public List<Sala> getByIdSucursal(int id) throws Exception {
+        String query = "SELECT * FROM sala WHERE idSucursal=? AND estatus = 1;";
+        
+        List<Sala> salas = new ArrayList<>();
+        
+        ConexionMySQL connMySQL = new ConexionMySQL();
+         //Abrimos la conexion a la Base de Datos:
+        Connection conn = connMySQL.open();
+        //Invocamos la centencia
+        PreparedStatement statement = conn.prepareStatement(query);
+        statement.setInt(1, id);
+        
+        ResultSet rs = statement.executeQuery();
+        
+        while(rs.next()) salas.add(fill(rs));
+        
+        rs.close();
+        conn.close();
+        
+        return salas;
+    }
+    
 }

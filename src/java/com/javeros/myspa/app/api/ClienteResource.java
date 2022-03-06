@@ -5,11 +5,13 @@ import com.google.gson.Gson;
 import com.javeros.myspa.app.controllers.ClienteController;
 import com.javeros.myspa.app.models.Cliente;
 import javax.ws.rs.DELETE;
+import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
@@ -17,11 +19,11 @@ import javax.ws.rs.core.Response;
 @Produces(MediaType.APPLICATION_JSON)
 public class ClienteResource {
     @GET
-    public Response readAll(){
+    public Response readAll(@QueryParam("filter") String word){
         ClienteController c = new ClienteController();
         String out = null;
         try {
-            out = new Gson().toJson(c.readAll());
+            out = new Gson().toJson(c.readAll(word));
         } catch (Exception e) {
             e.printStackTrace();
             out = "{\"error\":\" Ha ocurrido un error Intente nuevamente\"}";

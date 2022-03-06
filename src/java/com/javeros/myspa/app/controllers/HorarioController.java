@@ -31,7 +31,7 @@ public class HorarioController {
         PreparedStatement s = c.prepareStatement(sql);
         s.setString(1, o.getHoraInicio());
         s.setString(2, o.getHoraFin());
-        s.setInt(3, o.getIdHorario());
+        s.setInt(3, o.getId());
         s.executeUpdate();
         con.close();
         s.close();
@@ -46,7 +46,7 @@ public class HorarioController {
         ResultSet rs = s.executeQuery(sql);
         while(rs.next()){
             Horario h = new Horario();
-            h.setIdHorario(rs.getInt(1));
+            h.setId(rs.getInt(1));
             h.setHoraInicio(rs.getString(2));
             h.setHoraFin(rs.getString(3));
             horarios.add(h);
@@ -67,6 +67,14 @@ public class HorarioController {
         s.execute();
         con.close();
         s.close();
+    }
+    
+    public static Horario fill(ResultSet rs) throws Exception{
+        Horario horario = new Horario();
+        horario.setId(rs.getInt("idHorario"));
+        horario.setHoraInicio(rs.getString("horaInicio"));
+        horario.setHoraFin(rs.getString("horaFin"));
+        return horario;
     }
     
 }

@@ -73,6 +73,17 @@ function cargarModuloHorario() {
 
 }
 
+function cargarModuloReservation() {
+    $.ajax({
+        context: document.body,
+        url: "gestion/reservation/reservation.html"
+    }).done(function (data) {
+
+        // document.getElementById("contenedorPrincipal").innerHTML = data;
+        $("#contenedorPrincipal").html(data); //este hace lo mismo que el de arriba
+    });
+
+}
 
 function cerrarModulo() {
     $('#contenedorPrincipal').html('');

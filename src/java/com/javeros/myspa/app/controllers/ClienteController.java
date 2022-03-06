@@ -9,21 +9,30 @@ import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.Statement;
 import java.sql.Types;
 import java.util.ArrayList;
 import java.util.List;
 
 public class ClienteController {
-    public List<Cliente> readAll() throws Exception{
+    public List<Cliente> readAll(String word) throws Exception{
         List<Cliente> lista = new ArrayList<>();
-        
-        String query = "SELECT * FROM v_clientes";
         
         ConexionMySQL con = new ConexionMySQL();
         Connection conexion = con.open();
-        Statement statement = conexion.createStatement();
-        ResultSet rs = statement.executeQuery(query);
+        PreparedStatement statement = null;
+        
+        if(word == null || word.equals("")){
+            String query = "SELECT * FROM v_clientes";
+            statement = conexion.prepareStatement(query);
+        } else {
+            String query = "SELECT * FROM v_clientes WHERE nombre LIKE ? OR apellidoPaterno LIKE ? OR apellidoMaterno LIKE ?";
+            statement = conexion.prepareStatement(query);
+            statement.setString(1, "%" + word + "%");
+            statement.setString(2, "%" + word + "%");
+            statement.setString(3, "%" + word + "%");
+        }
+        
+        ResultSet rs = statement.executeQuery();
         while(rs.next()){
             lista.add(fill(rs));
         }
@@ -160,7 +169,7 @@ public class ClienteController {
         connMySQL.close();
     }
     
-    private Cliente fill(ResultSet rs) throws Exception{
+    public static Cliente fill(ResultSet rs) throws Exception{
         Cliente cliente = new Cliente();
         Persona persona = new Persona();
         Usuario usuario = new Usuario();
@@ -188,5 +197,28 @@ public class ClienteController {
         cliente.setUsuario(usuario);
         return cliente;
     }
+    
+    public static Cliente fillWithoutUser(ResultSet rs) throws Exception{
+        Cliente cliente = new Cliente();
+        Persona persona = new Persona();
+        
+        persona.setApellidoMaterno(rs.getString("apellidoMaterno"));
+        persona.setApellidoPaterno(rs.getString("apellidoPaterno"));
+        persona.setDomicilio(rs.getString("domicilio"));
+        persona.setGenero(rs.getString("genero"));
+        persona.setId(rs.getInt("idPersona"));
+        persona.setNombre(rs.getString("nombre"));
+        persona.setRfc(rs.getString("rfc"));
+        persona.setTelefono(rs.getString("telefono"));
+        
+        cliente.setIdCliente(rs.getInt("idCliente"));
+        cliente.setCorreo(rs.getString("correo"));
+        cliente.setNumeroUnico(rs.getString("numeroUnico"));
+        cliente.setEstatus(rs.getInt("estatus"));
+        
+        cliente.setPersona(persona);
+        return cliente;
+    }
+
 
 }

@@ -60,19 +60,23 @@ public class SalaResource {
     }
 
     @GET
-    public Response getAll(@QueryParam("token") String token) {
+    public Response getAll(@QueryParam("token") String token, @QueryParam("idSucursal") Integer idSucursal) {
         if(token == null || token.equals("")) return Response.status(401).entity(TOKEN_NOT_PROVIDED).build();
         try {
             if(!authController.validateToken(token)) return Response.status(401).entity(NOT_AUTHORIZED).build();
             
-            out = gson.toJson(salaController.getAll(""));
+            if(idSucursal == null ) {
+                out = gson.toJson(salaController.getAll(""));
+            } else {
+                out = gson.toJson(salaController.getAllBySucursal(idSucursal));
+            }
             return Response.ok().entity(out).build();
         } catch (Exception e) {
             e.printStackTrace();
             return Response.serverError().entity(SERVER_ERROR).build();
         }
     }
-
+    
     @Path("{id}")
     @DELETE
     public Response delete(@PathParam("id") Integer id, @FormParam("token") String token) {

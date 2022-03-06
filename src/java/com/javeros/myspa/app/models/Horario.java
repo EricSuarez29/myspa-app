@@ -2,11 +2,11 @@
 package com.javeros.myspa.app.models;
 
 public class Horario {
-    int IdHorario;
-    String horaInicio, horaFin;
+    private Integer id;
+    private String horaInicio, horaFin;
 
-    public Horario(int IdHorario, String horaInicio, String horaFin) {
-        this.IdHorario = IdHorario;
+    public Horario(int id, String horaInicio, String horaFin) {
+        this.id = id;
         this.horaInicio = horaInicio;
         this.horaFin = horaFin;
     }
@@ -14,12 +14,12 @@ public class Horario {
     public Horario(){
     }
 
-    public int getIdHorario() {
-        return IdHorario;
+    public int getId() {
+        return id;
     }
 
-    public void setIdHorario(int IdHorario) {
-        this.IdHorario = IdHorario;
+    public void setId(int id) {
+        this.id = id;
     }
 
     public String getHoraInicio() {
@@ -40,7 +40,7 @@ public class Horario {
 
     @Override
     public String toString() {
-        return "Horario{" + "IdHorario=" + IdHorario + ", horaInicio=" + horaInicio + ", horaFin=" + horaFin + '}';
+        return "Horario{" + "IdHorario=" + id + ", horaInicio=" + horaInicio + ", horaFin=" + horaFin + '}';
     }
     
     

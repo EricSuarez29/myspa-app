@@ -6,15 +6,32 @@ function inicializarModuloSala() {
 	refrescarTablaSala();
 }
 
+function sanitization(text){
+    return text.replaceAll(/[()`\\";._-]/ig, "");
+}
+
+function normalizar(text){
+    text = text.toUpperCase();
+    text = text.replaceAll("Á", "A");
+    text = text.replaceAll("É", "E");
+    text = text.replaceAll("Í", "I");
+    text = text.replaceAll("Ó", "O");
+    text = text.replaceAll("Ú", "U");
+    return text;
+}
+
+function formatText(text){
+    return sanitization(normalizar(text));
+}
+
 function guardarSala() {
 	var sala = new Object();
 
 	sala.id = parseInt($('#txtCod').val() || "0");
-	sala.nombre = $('#txtNombre').val();
-	sala.descripcion = $('#txtDescripcion').val();
-        sala.foto = '';
-	sala.idSucursal = 1;
-        console.log(sala);
+	sala.nombre = formatText($('#txtNombre').val());
+	sala.descripcion = formatText($('#txtDescripcion').val());
+        sala.foto = getImageSucursal();
+	sala.idSucursal = getIdSucursal();
         $.ajax({
             url: 'api/salas',
             type: 'POST',
@@ -40,7 +57,13 @@ function guardarSala() {
 	
 }
 
+function getImageSucursal(){
+    return '';
+}
 
+function getIdSucursal(){
+    return 1;
+}
 
 function eliminarSala() {
 
