@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 06-03-2022 a las 21:27:49
+-- Tiempo de generación: 14-03-2022 a las 17:00:56
 -- Versión del servidor: 10.4.22-MariaDB
 -- Versión de PHP: 8.0.15
 
@@ -620,8 +620,12 @@ CREATE TABLE `reservacion` (
 --
 
 INSERT INTO `reservacion` (`idReservacion`, `estatus`, `idCliente`, `idSala`, `idHorario`, `fecha`) VALUES
-(3, 1, 2, 4, 1, '2022-03-12'),
-(4, 1, 1, 1, 1, '2022-03-06');
+(3, 3, 2, 4, 1, '2022-03-12'),
+(4, 2, 1, 1, 1, '2022-03-06'),
+(30, 3, 1, 1, 1, '2022-03-12'),
+(31, 3, 1, 1, 1, '2022-03-12'),
+(32, 3, 1, 1, 2, '2022-03-12'),
+(33, 1, 2, 1, 3, '2022-03-12');
 
 -- --------------------------------------------------------
 
@@ -684,6 +688,13 @@ CREATE TABLE `servicio` (
   `idEmpleado` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
+--
+-- Volcado de datos para la tabla `servicio`
+--
+
+INSERT INTO `servicio` (`idServicio`, `fecha`, `idReservacion`, `idEmpleado`) VALUES
+(1, '2022-03-12 00:00:00', 4, 103);
+
 -- --------------------------------------------------------
 
 --
@@ -696,6 +707,14 @@ CREATE TABLE `servicio_tratamiento` (
   `idServicio` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
+--
+-- Volcado de datos para la tabla `servicio_tratamiento`
+--
+
+INSERT INTO `servicio_tratamiento` (`idServicioTratamiento`, `idTratamiento`, `idServicio`) VALUES
+(1, 1, 1),
+(2, 2, 1);
+
 -- --------------------------------------------------------
 
 --
@@ -707,6 +726,15 @@ CREATE TABLE `servicio_tratamiento_producto` (
   `idProducto` int(11) NOT NULL,
   `precioUso` float NOT NULL DEFAULT 0
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Volcado de datos para la tabla `servicio_tratamiento_producto`
+--
+
+INSERT INTO `servicio_tratamiento_producto` (`idServicioTratamiento`, `idProducto`, `precioUso`) VALUES
+(1, 2, 35),
+(1, 5, 35),
+(2, 6, 35);
 
 -- --------------------------------------------------------
 
@@ -784,7 +812,7 @@ CREATE TABLE `usuario` (
 --
 
 INSERT INTO `usuario` (`idUsuario`, `nombreUsuario`, `contrasenia`, `token`, `rol`) VALUES
-(1, 'admin', 'admin', '59b43ea3d7c8143ab63a89daadb5582f615fc81c6316ff43e244b35df6d7d30d', 'Administrador'),
+(1, 'admin', 'admin', '', 'Administrador'),
 (101, 'aovp', 'u1234', NULL, 'Administrador'),
 (102, 'aedl', 'u1235', NULL, 'Administrador'),
 (103, 'barj', 'u1236', NULL, 'Administrador'),
@@ -917,6 +945,8 @@ CREATE TABLE `v_servicios` (
 ,`idReservacion` int(11)
 ,`fechaReservacion` date
 ,`idHorario` int(11)
+,`horaInicio` varchar(10)
+,`horaFin` varchar(10)
 ,`idCliente` int(11)
 ,`numeroUnico` varchar(70)
 ,`nombreCliente` varchar(64)
@@ -1001,7 +1031,7 @@ CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW 
 --
 DROP TABLE IF EXISTS `v_servicios`;
 
-CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `v_servicios`  AS SELECT `s`.`idServicio` AS `idServicio`, `s`.`fecha` AS `fecha`, `r`.`idReservacion` AS `idReservacion`, `r`.`fecha` AS `fechaReservacion`, `r`.`idHorario` AS `idHorario`, `c`.`idCliente` AS `idCliente`, `c`.`numeroUnico` AS `numeroUnico`, `pc`.`nombre` AS `nombreCliente`, `pc`.`apellidoPaterno` AS `apellidoPaternoCliente`, `pc`.`apellidoMaterno` AS `apellidoMaternoCliente`, `sa`.`idSala` AS `idSala`, `sa`.`nombre` AS `nombreSala`, `e`.`idEmpleado` AS `idEmpleado`, `e`.`numeroEmpleado` AS `numeroEmpleado`, `pe`.`nombre` AS `nombreEmpleado`, `pe`.`apellidoPaterno` AS `apellidoPaternoEmpleado`, `pe`.`apellidoMaterno` AS `apellidoMaternoEmpleado`, `q2`.`totalProductos` AS `totalProductos`, `q2`.`totalTratamientos` AS `totalTratamientos` FROM (((((((`servicio` `s` join `reservacion` `r` on(`s`.`idReservacion` = `r`.`idReservacion`)) join `sala` `sa` on(`r`.`idSala` = `sa`.`idSala`)) join `cliente` `c` on(`r`.`idCliente` = `c`.`idCliente`)) join `persona` `pc` on(`c`.`idPersona` = `pc`.`idPersona`)) join `empleado` `e` on(`s`.`idEmpleado` = `e`.`idEmpleado`)) join `persona` `pe` on(`pe`.`idPersona` = `e`.`idPersona`)) join `v_servicios_tratamientos` `q2` on(`s`.`idServicio` = `q2`.`idServicio`)) ;
+CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `v_servicios`  AS SELECT `s`.`idServicio` AS `idServicio`, `s`.`fecha` AS `fecha`, `r`.`idReservacion` AS `idReservacion`, `r`.`fecha` AS `fechaReservacion`, `h`.`idHorario` AS `idHorario`, `h`.`horaInicio` AS `horaInicio`, `h`.`horaFin` AS `horaFin`, `c`.`idCliente` AS `idCliente`, `c`.`numeroUnico` AS `numeroUnico`, `pc`.`nombre` AS `nombreCliente`, `pc`.`apellidoPaterno` AS `apellidoPaternoCliente`, `pc`.`apellidoMaterno` AS `apellidoMaternoCliente`, `sa`.`idSala` AS `idSala`, `sa`.`nombre` AS `nombreSala`, `e`.`idEmpleado` AS `idEmpleado`, `e`.`numeroEmpleado` AS `numeroEmpleado`, `pe`.`nombre` AS `nombreEmpleado`, `pe`.`apellidoPaterno` AS `apellidoPaternoEmpleado`, `pe`.`apellidoMaterno` AS `apellidoMaternoEmpleado`, `q2`.`totalProductos` AS `totalProductos`, `q2`.`totalTratamientos` AS `totalTratamientos` FROM ((((((((`servicio` `s` join `reservacion` `r` on(`s`.`idReservacion` = `r`.`idReservacion`)) join `sala` `sa` on(`r`.`idSala` = `sa`.`idSala`)) join `cliente` `c` on(`r`.`idCliente` = `c`.`idCliente`)) join `persona` `pc` on(`c`.`idPersona` = `pc`.`idPersona`)) join `empleado` `e` on(`s`.`idEmpleado` = `e`.`idEmpleado`)) join `persona` `pe` on(`pe`.`idPersona` = `e`.`idPersona`)) join `v_servicios_tratamientos` `q2` on(`s`.`idServicio` = `q2`.`idServicio`)) join `horario` `h` on(`r`.`idHorario` = `h`.`idHorario`)) ;
 
 -- --------------------------------------------------------
 
@@ -1161,7 +1191,7 @@ ALTER TABLE `producto`
 -- AUTO_INCREMENT de la tabla `reservacion`
 --
 ALTER TABLE `reservacion`
-  MODIFY `idReservacion` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `idReservacion` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=34;
 
 --
 -- AUTO_INCREMENT de la tabla `sala`
@@ -1173,13 +1203,13 @@ ALTER TABLE `sala`
 -- AUTO_INCREMENT de la tabla `servicio`
 --
 ALTER TABLE `servicio`
-  MODIFY `idServicio` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `idServicio` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT de la tabla `servicio_tratamiento`
 --
 ALTER TABLE `servicio_tratamiento`
-  MODIFY `idServicioTratamiento` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `idServicioTratamiento` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT de la tabla `sucursal`
