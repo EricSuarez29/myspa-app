@@ -5,11 +5,13 @@ import com.google.gson.Gson;
 import com.javeros.myspa.app.controllers.ReservacionController;
 import com.javeros.myspa.app.models.Reservacion;
 import java.time.LocalDate;
-import java.util.Arrays;
+import javax.ws.rs.DELETE;
+import javax.ws.rs.DefaultValue;
 import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
@@ -45,11 +47,25 @@ public class ReservacionResource {
     }
     
     @GET
-    public Response find(){
+    public Response find(@QueryParam("estatus") @DefaultValue("1") Integer estatus){
         try {
             return Response.ok()
                     .entity(
-                        gson.toJson(reservacionController.find())
+                        gson.toJson(reservacionController.find(estatus))
+                    ).build();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return Response.serverError().build();
+        }
+    }
+    
+    @GET
+    @Path("{id}")
+    public Response findOne(@PathParam("id") Integer id){
+        try {
+            return Response.ok()
+                    .entity(
+                        gson.toJson(reservacionController.findOne(id))
                     ).build();
         } catch (Exception e) {
             e.printStackTrace();
@@ -64,6 +80,18 @@ public class ReservacionResource {
             String[] datesFormat = date.split("-");
             reservacion.setDate(LocalDate.of(Integer.parseInt(datesFormat[0]), Integer.parseInt(datesFormat[1]), Integer.parseInt(datesFormat[2])));
             reservacionController.insert(reservacion);
+            return Response.ok().build();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return Response.serverError().build();
+        }
+    }
+    
+    @DELETE
+    @Path("{id}")
+    public Response cancel(@PathParam("id") Integer id){
+        try {
+            reservacionController.cancelById(id);
             return Response.ok().build();
         } catch (Exception e) {
             e.printStackTrace();

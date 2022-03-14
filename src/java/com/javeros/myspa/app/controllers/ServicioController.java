@@ -7,9 +7,30 @@ import com.javeros.myspa.app.models.ServicioTratamiento;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.List;
 
 public class ServicioController {
+    
+    public List<Servicio> find() throws Exception{
+        String query = "SELECT * FROM v_servicios";
+        ConexionMySQL connMySQL = new ConexionMySQL();
+        Connection conn = connMySQL.open();
+        Statement statement = conn.createStatement();
+        
+        ResultSet rs = statement.executeQuery(query);
+        
+        List<Servicio> servicios = new ArrayList<>();
+        
+        while(rs.next()) servicios.add(fill(rs));
+        
+        rs.close();
+        statement.close();
+        conn.close();
+        
+        return servicios;
+    }
 
     public Long insert(Servicio s) throws Exception {
         //Preparamos las consultas
@@ -137,5 +158,15 @@ public class ServicioController {
         connMySQL.close();
 
         return s.getId();
+    }
+    
+    public static Servicio fill(ResultSet rs) throws Exception{
+        Servicio servicio = new Servicio();
+        servicio.setFecha(rs.getDate("fecha").toLocalDate());
+        servicio.setId(rs.getLong("idServicio"));
+        servicio.setTotal(rs.getDouble("totalProductos") + rs.getDouble("totalTratamientos"));
+        servicio.setEmpleado(EmpleadoController.fillOnService(rs));
+        servicio.setReservacion(ReservacionController.fillOnService(rs));
+        return servicio;
     }
 }

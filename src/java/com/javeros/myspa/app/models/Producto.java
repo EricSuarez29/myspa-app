@@ -85,4 +85,9 @@ public class Producto {
     public void setPrecioUso(float precioUso) {
         this.precioUso = precioUso;
     }
+
+    @Override
+    public String toString() {
+        return "Producto{" + "id=" + id + ", nombre=" + nombre + ", marca=" + marca + ", estatus=" + estatus + ", precioUso=" + precioUso + '}';
+    }
 }

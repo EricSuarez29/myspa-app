@@ -235,6 +235,21 @@ public class SalaController {
         //Devolvemos el objeto de tipo Sucursal:
         return s;
     }
+    
+    public static Sala fillWithReservation(ResultSet rs) throws Exception {
+        //Creamos una nueva instancia de Sucursal:
+        Sala s = new Sala();
+
+        //Llenamos sus propiedades:
+        s.setId(rs.getInt("idSala"));
+        s.setNombre(rs.getString("nombreSala"));
+        s.setDescripcion(rs.getString("descripcion"));
+        s.setFoto(rs.getString("foto"));
+        s.setEstatus(rs.getInt("estatus"));
+        s.setIdSucursal(rs.getInt("idSucursal"));
+        //Devolvemos el objeto de tipo Sucursal:
+        return s;
+    }
 
     public List<Sala> getByIdSucursal(int id) throws Exception {
         String query = "SELECT * FROM sala WHERE idSucursal=? AND estatus = 1;";

@@ -12,6 +12,7 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
@@ -21,11 +22,11 @@ import javax.ws.rs.core.Response;
 public class EmpleadoResource {
 
     @GET
-    public Response readAll(){
+    public Response readAll(@QueryParam("filter") String filter){
         String out;
         try{
             EmpleadoController dao = new EmpleadoController();
-            out = new Gson().toJson(dao.readAll(""));
+            out = new Gson().toJson(dao.readAll(filter));
         }catch(Exception e){
             e.printStackTrace();
             out = "{\"error\":\" Ha ocurrido un error Intente nuevamente\"}";

@@ -134,28 +134,30 @@ public class ProductoController {
      * Consulta todos los registros de productos en la BD y devuelve una
      * lista dinámica de objetos de tipo producto
      */
-    public List<Producto> getAll(String filtro) throws Exception {
-        //Definimos la consulta SQL:
-        String sql = "SELECT * FROM producto WHERE estatus = 1";
-        
-        //Aquí guardaremos objetos de tipo producto.
-        //Una lista es un contenedor dinámico de objetos.
+    public List<Producto> getAll(String word) throws Exception {
         List<Producto> productos = new ArrayList<Producto>();
         
-        //Una variable temporal para crear nuevas instancias de Producto:
         Producto p = null;
         
-        //Con este objeto vamos a conectar la Base de Datos:
         ConexionMySQL connMySQL = new ConexionMySQL();
         
         //Abrimos la conexión con MySQL:
-        Connection conn = connMySQL.open();
+        Connection conexion = connMySQL.open();
+
+        PreparedStatement statement;
         
-        //Declaramos e inicializamos el objeto con el que ejecutaremos la consalta SQL:
-        PreparedStatement pstmt = conn.prepareStatement(sql);
+        if(word == null || word.equals("")){
+            String query = "SELECT * FROM producto";
+            statement = conexion.prepareStatement(query);
+        } else {
+            String query = "SELECT * FROM producto WHERE nombre LIKE ? OR marca LIKE ?";
+            statement = conexion.prepareStatement(query);
+            statement.setString(1, "%" + word + "%");
+            statement.setString(2, "%" + word + "%");
+        }
         
         //Ejecutamos la consulta y guardamos su resultado:
-        ResultSet rs = pstmt.executeQuery();
+        ResultSet rs = statement.executeQuery();
         
         //Recorremos el ResultSet:
         while (rs.next()) {
@@ -165,7 +167,7 @@ public class ProductoController {
         
         //Cerramos los objetos de BD:
         rs.close();
-        pstmt.close();
+        statement.close();
         connMySQL.close();
         
         //Devolvemos la lista de sucursales:

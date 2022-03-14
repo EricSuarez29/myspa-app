@@ -71,5 +71,10 @@ public class Servicio {
     public void setTotal(Double total) {
         this.total = total;
     }
+
+    @Override
+    public String toString() {
+        return "Servicio{" + "id=" + id + ", fecha=" + fecha + ", empleado=" + empleado + ", reservacion=" + reservacion + ", servicioTratamientos=" + servicioTratamientos + ", total=" + total + '}';
+    }
     
 }

@@ -4,22 +4,29 @@
 }
 
 
-.wrapper .search-input{
+.wrapper .search-input,
+.wrapper-2 .search-input-2,
+.wrapper-3 .search-input-3{
     background: white;
     width: 100%;
     border-radius: 2px;
     position: relative;
 }
 
-.search-input .autocom-box{
+.search-input .autocom-box,
+.search-input-2 .autocom-box,
+.search-input-3 .autocom-box{
     position: absolute;
+    z-index: 10;
     width: 100%;
     padding: 0;
     opacity: 1;
     max-height: 280px;
 }
 
-.search-input.active input{
+.search-input.active input,
+.search-input-2.active input,
+.search-input-3.active input{
     border-radius: 5px 5px 0 0;
 }
 
@@ -32,7 +39,9 @@
     border-radius: 3px;
 }
 
-.search-input.active .autocom-box li {
+.search-input.active .autocom-box li,
+.search-input-2.active .autocom-box li,
+.search-input-3.active .autocom-box li{
     display: block;
 }
 

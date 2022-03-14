@@ -220,5 +220,17 @@ public class ClienteController {
         return cliente;
     }
 
+    public static Cliente fillOnService(ResultSet rs) throws Exception {
+        Cliente cliente = new Cliente();
+        Persona persona = new Persona();
+        
+        cliente.setIdCliente(rs.getInt("idCliente"));
+        persona.setNombre(rs.getString("nombreCliente"));
+        persona.setApellidoPaterno(rs.getString("apellidoPaternoCliente"));
+        persona.setApellidoMaterno(rs.getString("apellidoMaternoCliente"));
+        
+        cliente.setPersona(persona);
+        return cliente;
+    }
 
 }

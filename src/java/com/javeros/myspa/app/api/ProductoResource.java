@@ -66,7 +66,7 @@ public class ProductoResource {
     @Path("getAll")
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getAll(@QueryParam("filtro") @DefaultValue("") String filtro) {
+    public Response getAll(@QueryParam("filter") @DefaultValue("") String filtro) {
         ProductoController cp = new ProductoController();
         List<Producto> productos = null;
         String out = null;

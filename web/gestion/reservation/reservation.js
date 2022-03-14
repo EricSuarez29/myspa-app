@@ -1,14 +1,14 @@
-const d = document,
+var d = document,
         $slcSucursales = d.getElementById("select-sucursales"),
         $slcSalas = d.getElementById("select-salas"),
         $slcHorarios = d.getElementById("select-time"),
         $datePicker = d.getElementById("input-date");
 
-const token = sessionStorage.getItem("token");
+var token = sessionStorage.getItem("token");
 
-let idCliente = 0;
+var idCliente = 0;
 
-const loadOptionOnSelect = (select, options) => {
+var loadOptionOnSelect = (select, options) => {
     let $option = d.createElement("option");
 
     options.forEach(el => {
@@ -19,7 +19,7 @@ const loadOptionOnSelect = (select, options) => {
     });
 };
 
-const loadOptionOnSelectHorario = (select, options) => {
+var loadOptionOnSelectHorario = (select, options) => {
     let $option = d.createElement("option");
 
     options.forEach(el => {
@@ -30,7 +30,7 @@ const loadOptionOnSelectHorario = (select, options) => {
     });
 };
 
-function TableRow({date, cliente, sala, horario, id}) {
+function TableRow({date, cliente, sala, horario, id}, estatus) {
     return `
         <tr>
             <td>${date.year}-${date.month}-${date.day}</td>
@@ -39,39 +39,42 @@ function TableRow({date, cliente, sala, horario, id}) {
             <td>${cliente.persona.nombre}</td>
             <td>${sala.nombre}</td>
             <td>
-                <button class="btn btn-outline-warning btn-sm">
+                ${estatus === 1 ?
+                `
+                <button onclick="handleAtendService(${id})" class="btn btn-outline-warning btn-sm">
                     <i class="fas fa-concierge-bell"></i>
                 </button>
-                <button class="btn btn-outline-danger btn-sm">
+                <button onclick="handleCancel(${id})" class="btn btn-outline-danger btn-sm">
                     <i class="fas fa-trash"></i>
                 </button>
+                `: ''}
             </td>
         </tr>
     `;
 }
 
-const loadTableContent = (arr) => {
-    d.querySelector("tbody").innerHTML = arr.map(el => TableRow(el)).join("");
+var loadTableContent = ({arr, estatus = 1}) => {
+    d.querySelector("tbody").innerHTML = arr.map(el => TableRow(el, estatus)).join("");
 };
 
 (async () => {
-    const [resSucursales, resReservaciones] = await Promise.all([
-        fetch("api/sucursal"),
-        fetch("api/reservacion")
-    ]);
-
+    const resSucursales = await fetch("api/sucursal");
     const jsonSucursales = await resSucursales.json();
-    const jsonReservaciones = await resReservaciones.json();
-
     loadOptionOnSelect($slcSucursales, jsonSucursales);
-    loadTableContent(jsonReservaciones);
+    
 })();
 
-const getElementSeleted = (element) => {
+async function fetchReservaciones(){
+    $.ajax("api/reservacion").done(function(data){
+        loadTableContent({arr: data});
+    });
+}
+
+var getElementSeleted = (element) => {
     return element.options[element.selectedIndex];
 };
 
-const loadSalasBySucursal = async (id) => {
+var loadSalasBySucursal = async (id) => {
     const res = await fetch(`api/salas?idSucursal=${id}&token=${token}`),
             salas = await res.json();
 
@@ -79,7 +82,7 @@ const loadSalasBySucursal = async (id) => {
     loadOptionOnSelect($slcSalas, salas);
 };
 
-const loadHourByDate = async (date, idSala) => {
+var loadHourByDate = async (date, idSala) => {
     const res = await fetch(`api/reservacion/hours?date=${date}&sala=${idSala}`),
             horarios = await res.json();
 
@@ -87,18 +90,18 @@ const loadHourByDate = async (date, idSala) => {
     loadOptionOnSelectHorario($slcHorarios, horarios);
 };
 
-const fetchClients = async (pattern) => {
+var fetchClients = async (pattern) => {
     const res = await fetch(`api/cliente?filter=${pattern}`);
     return res.json();
 };
 
 
-const searchWrapper = d.querySelector(".search-input"),
+var searchWrapper = d.querySelector(".search-input"),
         inputBox = searchWrapper.querySelector("input"),
         suggBox = searchWrapper.querySelector(".autocom-box");
 
 
-let webLink;
+var webLink;
 
 inputBox.onkeyup = async (evt) => {
     let userData = evt.target.value;
@@ -136,7 +139,7 @@ function showSuggestions(list) {
         suggBox.innerHTML = list.join("");
 }
 
-const clearForm = () => {
+var clearForm = () => {
     $slcSucursales.selectedIndex = 0;
     $slcSalas.innerHTML = `<option value="0">Selecione una Sala</option>`;
     $slcHorarios.innerHTML = `<option>Selecione un horario</option>`;
@@ -144,7 +147,7 @@ const clearForm = () => {
     $datePicker.innerHTML = '';
 }
 
-const handleClickOnSave = async () => {
+var handleClickOnSave = async () => {
     const reservation = {
         horario: {
             id: parseInt(getElementSeleted($slcHorarios).value)
@@ -165,6 +168,8 @@ const handleClickOnSave = async () => {
             date: $datePicker.value
         }
     }).done((res) => {
+        fetchReservaciones();
+        clearForm();
         Swal.fire({
             title: "Reservación creada correctamente",
             icon: "success",
@@ -182,10 +187,32 @@ const handleClickOnSave = async () => {
     });
 };
 
+function handleAtendService(id) {
+    sessionStorage.setItem("reservation", id);
+    cargarModuloServicio();
+}
+
+function handleCancel(id){
+    $.ajax({
+        url: `api/reservacion/${id}`,
+        type: 'DELETE'
+    }).done(function(res) {
+        fetchReservaciones();
+        Swal.fire({
+            title: "Reservación cancelada correctamente",
+            icon: "success",
+            toast: true,
+            position: 'top-end',
+            showConfirmButton: false,
+            timer: 1500
+        });
+    }).catch(console.log);
+}
+
 d.addEventListener("click", evt => {
     let $element = evt.target;
     if ($element.id === "btn-save") {
-        handleClickOnSave();
+        //handleClickOnSave();
     }
 
     if ($element === $slcSucursales) {
@@ -205,8 +232,18 @@ d.addEventListener("change", (evt) => {
     if ($element === $datePicker || $element === $slcSalas) {
         if ($datePicker.value) {
             let idSala = parseInt(getElementSeleted($slcSalas).value);
-            console.log(idSala);
             loadHourByDate($datePicker.value, idSala);
         }
     }
 });
+
+function changeListStatus(){
+    const $selectStatus = document.getElementById("select-status");
+    const { value } = $selectStatus.options[$selectStatus.selectedIndex];
+    console.log(value);
+    $.ajax(`api/reservacion?estatus=${value}`).done(function(data){
+        loadTableContent({arr: data, estatus: parseInt(value)});
+    });
+}
+
+fetchReservaciones();

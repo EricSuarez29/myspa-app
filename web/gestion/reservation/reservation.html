@@ -3,12 +3,17 @@
         <article class="card mt-5">
             <div class="card-body">
                 <h1 class="card-title text-center display-3">Reservaciones</h1>
-                <div class="my-1">
+                <div class="my-1 d-flex justify-content-between">
                     <!-- Button trigger modal -->
                     <button type="button" class="btn btn-outline-success px-5" data-bs-toggle="modal"
                             data-bs-target="#exampleModal">
                         Nuevo
                     </button>
+                    <select id="select-status" onchange="changeListStatus()" class="form-select" style="max-width: 200px">
+                        <option selected value="1">Activas</option>
+                        <option value="2">Atendidas</option>
+                        <option value="3">Canceladas</option>
+                    </select>
                 </div>
                 <div class="row mt-3">
                     <table class="table table-light">
@@ -69,7 +74,7 @@
                         </div>
                         <input type="hidden" value="" id="idCliente">
                         <div class="mt-3 text-center">
-                            <button class="btn px-5 btn-outline-success" data-bs-dismiss="modal" id="btn-save">Guardar</button>
+                            <button class="btn px-5 btn-outline-success" data-bs-dismiss="modal" id="btn-save" onclick="handleClickOnSave();">Guardar</button>
                         </div>
                     </div>
                 </div>
@@ -77,4 +82,4 @@
         </div>
     </div>
 </main>
-<script type="text/javascript" src="gestion/reservation/reservation.js"></script>
+<script src="gestion/reservation/reservation.js"></script>

@@ -10,26 +10,34 @@ import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.Statement;
 import java.sql.Types;
 import java.util.ArrayList;
 import java.util.List;
 
 public class EmpleadoController {
 
-    public List<Empleado> readAll(String filter) throws Exception {
-        
-        String query = "SELECT * FROM v_empleados";
+    public List<Empleado> readAll(String word) throws Exception {
         
         List<Empleado> empleados = new ArrayList<Empleado>();
          
         ConexionMySQL connMySQL = new ConexionMySQL();
         
         Connection conexion = connMySQL.open();
+        PreparedStatement statement;
         
-        Statement statement = conexion.createStatement();
+        if(word == null || word.equals("")){
+            String query = "SELECT * FROM v_empleados";
+            statement = conexion.prepareStatement(query);
+        } else {
+            String query = "SELECT * FROM v_empleados WHERE nombre LIKE ? OR apellidoPaterno LIKE ? OR apellidoMaterno LIKE ?";
+            statement = conexion.prepareStatement(query);
+            statement.setString(1, "%" + word + "%");
+            statement.setString(2, "%" + word + "%");
+            statement.setString(3, "%" + word + "%");
+        }
         
-        ResultSet rs = statement.executeQuery(query);
+        
+        ResultSet rs = statement.executeQuery();
         
         while(rs.next()){
             empleados.add(fill(rs));
@@ -209,4 +217,16 @@ public class EmpleadoController {
         connMySQL.close();
     }
     
+    public static Empleado fillOnService(ResultSet rs) throws Exception{
+        Empleado empleado = new Empleado();
+        Persona persona = new Persona();
+        
+        empleado.setId(rs.getInt("idEmpleado"));
+        persona.setNombre(rs.getString("nombreEmpleado"));
+        persona.setApellidoMaterno(rs.getString("apellidoMaternoEmpleado"));
+        persona.setApellidoPaterno(rs.getString("apellidoPaternoEmpleado"));
+        
+        empleado.setPersona(persona);
+        return empleado;
+    }
 }
